@@ -1,0 +1,16 @@
+<mat-form-field mad-dialog-title class="example-full-width">
+  <input matInput placeholder="Title" maxlength="255" [(ngModel)]="note.title">
+</mat-form-field>
+<div mat-dialog-content>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Content</mat-label>
+    <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="2" cdkAutosizeMaxRows="14"
+      maxlength="1024" [(ngModel)]="note.content"></textarea>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+  <span class="spacer"></span>
+  <button mat-button [mat-dialog-close]="note" cdkFocusInitial >Save</button>
+</div>

@@ -1,0 +1,14 @@
+<!-- <mat-form-field mad-dialog-title class="example-full-width">
+  <input matInput placeholder="Title" maxlength="255" [(ngModel)]="note.title">
+</mat-form-field> -->
+<div mat-dialog-content>
+  <p>
+    Are you sure?
+  </p>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()">Never mind</button>
+  <span class="spacer"></span>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Yes</button>
+</div>

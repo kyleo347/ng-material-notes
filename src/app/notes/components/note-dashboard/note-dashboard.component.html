@@ -1,0 +1,29 @@
+<div class="grid-container">
+  <mat-grid-list cols="{{(isHandset$ | async) ? 1 : 3}}" rowHeight="200px">
+    <mat-grid-tile *ngFor="let note of notes$ | async" >
+      <mat-card class="dashboard-note" (click)="openDialog(note)">
+        <mat-card-header>
+          <mat-card-title>
+            {{note.title}}
+            <!-- <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+              <mat-icon>more_vert</mat-icon>
+            </button> -->
+            
+          <button mat-icon-button class="delete-button" (click)="confirmDelete($event, note)">
+            <mat-icon>delete</mat-icon>
+          </button>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="dashboard-note-content">
+          <div>{{ note.content }}</div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+  
+  <button mat-fab color="primary" id="add" (click)="openDialog()">
+    <mat-icon>
+      add
+    </mat-icon>
+  </button>
+</div>
