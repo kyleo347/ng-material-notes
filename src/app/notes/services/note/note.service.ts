@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { Note } from '../../models/note.model';
-import { NotesModule } from '../../notes.module';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -13,20 +12,30 @@ const httpOptions = {
 
 @Injectable()
 export class NoteService {
-  notes: Note[] = [];
-  // noteSub = new Subject<Note[]>();
-
+  notes: Observable<Note[]>;
+  private _notes = new BehaviorSubject<Note[]>([]);
+  private store: { notes: Note[] } = { notes: [] };
   private notesUrl = 'api/notes';  // URL to web api
 
-  constructor(
-    private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.notes = this._notes.asObservable();
+    this.loadNotes();
+  }
 
-  /** GET notes from the server */
-  getNotes (): Observable<Note[]> {
-    return this.http.get<Note[]>(this.notesUrl)
-      .pipe(
-        catchError(this.handleError('getNotes', []))
-      );
+    /** GET notes from the server */
+  loadNotes() {
+    this.http.get<Note[]>(this.notesUrl).subscribe(notes => {
+      this.store.notes = notes;
+      this._notes.next([...this.store.notes]);
+    });
+  }
+
+  getNotes(): Observable<Note[]> {
+    return this.notes;
+    // return this.http.get<Note[]>(this.notesUrl)
+    //   .pipe(
+    //     catchError(this.handleError('getNotes', []))
+    //   );
   }
 
   /** GET note by id. Return `undefined` when id not found */
@@ -64,27 +73,44 @@ export class NoteService {
   //////// Save methods //////////
 
   /** POST: add a new note to the server */
-  addNote (note: Note): Observable<Note> {
+  addNote(note: Note) {
     return this.http.post<Note>(this.notesUrl, note, httpOptions).pipe(
       catchError(this.handleError<Note>('addNote'))
-    );
+    ).subscribe(newNote => {
+      this.store.notes.push(newNote);
+      this._notes.next([...this.store.notes]);
+    });
   }
 
   /** DELETE: delete the note from the server */
-  deleteNote (note: Note | number): Observable<Note> {
+  deleteNote(note: Note | number) {
     const id = typeof note === 'number' ? note : note.id;
     const url = `${this.notesUrl}/${id}`;
 
     return this.http.delete<Note>(url, httpOptions).pipe(
       catchError(this.handleError<Note>('deleteNote'))
-    );
+    ).subscribe(data => {
+      this.store.notes.forEach((val, idx) => {
+        if (val.id === id) {
+          this.store.notes.splice(idx, 1);
+        }
+      });
+      this._notes.next([...this.store.notes]);
+    });
   }
 
   /** PUT: update the note on the server */
-  updateNote (note: Note): Observable<any> {
+  updateNote(note: Note) {
     return this.http.put(this.notesUrl, note, httpOptions).pipe(
       catchError(this.handleError<any>('updateNote'))
-    );
+    ).subscribe(newNote => {
+      this.store.notes.forEach((val, idx) => {
+        if (val.id === note.id) {
+          this.store.notes[idx] = note;
+        }
+      });
+      this._notes.next([...this.store.notes]);
+    });
   }
 
   /**
@@ -93,7 +119,7 @@ export class NoteService {
    * @param operation - name of the operation that failed
    * @param result - optional value to return as the observable result
    */
-  private handleError<T> (operation = 'operation', result?: T) {
+  private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
 
       // TODO: send the error to remote logging infrastructure

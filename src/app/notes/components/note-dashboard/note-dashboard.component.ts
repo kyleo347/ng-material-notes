@@ -40,11 +40,11 @@ export class NoteDashboardComponent implements OnInit {
     dialogRef.afterClosed().subscribe(newNote => {
       if (newNote) {
         if (newNote.id) {
-          this.noteService.updateNote(newNote).subscribe();
+          this.noteService.updateNote(newNote);
         } else {
-          this.noteService.addNote(newNote).subscribe();
+          this.noteService.addNote(newNote);
         }
-        this.notes$ = this.noteService.getNotes();
+        // this.notes$ = this.noteService.getNotes();
       }
     });
   }
@@ -55,8 +55,8 @@ export class NoteDashboardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {
       if (confirmed) {
-        this.noteService.deleteNote(note).subscribe();
-        this.notes$ = this.noteService.getNotes();
+        this.noteService.deleteNote(note);
+        // this.notes$ = this.noteService.getNotes();
       }
     });
   }
