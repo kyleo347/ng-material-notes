@@ -27,7 +27,7 @@ export class NoteService {
     this.http.get<Note[]>(this.notesUrl).subscribe(notes => {
       this.store.notes = notes;
       this._notes.next([...this.store.notes]);
-    });
+    }, error => console.error('could not load notes'));
   }
 
   getNotes(): Observable<Note[]> {
@@ -52,23 +52,23 @@ export class NoteService {
   }
 
   /** GET note by id. Will 404 if id not found */
-  getNote(id: number): Observable<Note> {
-    const url = `${this.notesUrl}/${id}`;
-    return this.http.get<Note>(url).pipe(
-      catchError(this.handleError<Note>(`getNote id=${id}`))
-    );
-  }
+  // getNote(id: number): Observable<Note> {
+  //   const url = `${this.notesUrl}/${id}`;
+  //   return this.http.get<Note>(url).pipe(
+  //     catchError(this.handleError<Note>(`getNote id=${id}`))
+  //   );
+  // }
 
   /* GET notes whose name contains search term */
-  searchNotes(term: string): Observable<Note[]> {
-    if (!term.trim()) {
-      // if not search term, return empty note array.
-      return of([]);
-    }
-    return this.http.get<Note[]>(`${this.notesUrl}/?name=${term}`).pipe(
-      catchError(this.handleError<Note[]>('searchNotes', []))
-    );
-  }
+  // searchNotes(term: string): Observable<Note[]> {
+  //   if (!term.trim()) {
+  //     // if not search term, return empty note array.
+  //     return of([]);
+  //   }
+  //   return this.http.get<Note[]>(`${this.notesUrl}/?name=${term}`).pipe(
+  //     catchError(this.handleError<Note[]>('searchNotes', []))
+  //   );
+  // }
 
   //////// Save methods //////////
 
@@ -79,7 +79,7 @@ export class NoteService {
     ).subscribe(newNote => {
       this.store.notes.push(newNote);
       this._notes.next([...this.store.notes]);
-    });
+    }, error => console.error('could not add note ' + note.title));
   }
 
   /** DELETE: delete the note from the server */
@@ -96,7 +96,7 @@ export class NoteService {
         }
       });
       this._notes.next([...this.store.notes]);
-    });
+    }, error => console.error('could not delete note ' + id));
   }
 
   /** PUT: update the note on the server */
@@ -110,7 +110,7 @@ export class NoteService {
         }
       });
       this._notes.next([...this.store.notes]);
-    });
+    }, error => console.error('could not update note ' + note.title));
   }
 
   /**

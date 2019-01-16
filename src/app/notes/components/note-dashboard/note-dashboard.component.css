@@ -18,6 +18,9 @@
 
 .dashboard-note-content {
   text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  height: 120px;
 }
 
 .mat-card:hover{

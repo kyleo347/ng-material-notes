@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChildren, DoCheck, ElementRef } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { NoteService } from '../../services/note/note.service';
 import { Observable } from 'rxjs';
 import { Note } from '../../models/note.model';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatGridTile } from '@angular/material';
 import { NoteModalComponent } from '../note-modal/note-modal.component';
 import { ConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 
@@ -13,8 +13,10 @@ import { ConfirmModalComponent } from '../confirm-modal/confirm-modal.component'
   templateUrl: './note-dashboard.component.html',
   styleUrls: ['./note-dashboard.component.css']
 })
-export class NoteDashboardComponent implements OnInit {
+export class NoteDashboardComponent implements OnInit, DoCheck {
   notes$: Observable<Note[]>;
+  @ViewChildren('tiles') tiles;
+  @ViewChildren('contents') contents;
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
   .pipe(
     map(result => result.matches)
@@ -29,6 +31,19 @@ export class NoteDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.notes$ = this.noteService.getNotes();
+  }
+
+  ngDoCheck() {
+    if (this.tiles && this.contents) {
+      const tileArr = this.tiles.toArray();
+      const contentArr = this.contents.toArray();
+      for (let i = 0; i < tileArr.length; i++) {
+        const content: ElementRef = contentArr[i];
+        const tile: MatGridTile = tileArr[i];
+        const rows = Math.ceil(content.nativeElement.offsetHeight / 200);
+        tile.rowspan = rows;
+      }
+    }
   }
 
   openDialog(note: Note = new Note() ): void {

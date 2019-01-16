@@ -16,7 +16,8 @@ export class NoteModalComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<NoteModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Note,
-    private ngZone: NgZone) { }
+    private ngZone: NgZone
+    ) { }
 
   ngOnInit() {
     this.note = {...this.data};
