@@ -11,7 +11,7 @@ import { ConfirmModalComponent } from '../confirm-modal/confirm-modal.component'
 @Component({
   selector: 'app-note-dashboard',
   templateUrl: './note-dashboard.component.html',
-  styleUrls: ['./note-dashboard.component.css']
+  styleUrls: ['./note-dashboard.component.scss']
 })
 export class NoteDashboardComponent implements OnInit, DoCheck {
   notes$: Observable<Note[]>;

@@ -7,7 +7,7 @@ import { take } from 'rxjs/operators';
 @Component({
   selector: 'app-note-modal',
   templateUrl: './note-modal.component.html',
-  styleUrls: ['./note-modal.component.css']
+  styleUrls: ['./note-modal.component.scss']
 })
 export class NoteModalComponent implements OnInit {
   note: Note;
