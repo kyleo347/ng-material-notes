@@ -16,6 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NoteModalComponent } from './components/note-modal/note-modal.component';
 import { FormsModule } from '@angular/forms';
 import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [NoteDashboardComponent, NoteModalComponent, ConfirmModalComponent],
@@ -27,6 +28,7 @@ import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.
   ],
   imports: [
     CommonModule,
+    BrowserAnimationsModule,
     MatGridListModule,
     MatCardModule,
     MatMenuModule,
